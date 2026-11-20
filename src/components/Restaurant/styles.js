@@ -4,7 +4,10 @@ import { colors } from '../../styles'
 export const Card = styled.article`
   max-width: 472px;
   width: 100%;
+  height: 100%;
   background-color: ${colors.white};
+  display: flex;
+  flex-direction: column;
 `
 
 export const ImageWrapper = styled.div`
@@ -29,9 +32,18 @@ export const Content = styled.div`
   padding: 8px;
   border: 1px solid ${colors.salmon};
   border-top: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  > a {
+    margin-top: auto;
+  }
 `
 
 export const TitleRow = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
