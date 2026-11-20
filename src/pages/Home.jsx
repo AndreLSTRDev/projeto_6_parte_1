@@ -1,45 +1,15 @@
-
-import { Link } from 'react-router-dom'
-import logo from '../assets/logo.png'
-import { restaurants } from '../data'
+import Hero from '../components/Hero'
+import RestaurantList from '../components/RestaurantList'
 import Footer from '../components/Footer'
-import RestaurantCard from '../components/RestaurantCard'
-import {
-  Page,
-  Main,
-  Hero,
-  Logo,
-  RestaurantGrid,
-} from '../styles/components'
+import { restaurants } from '../data'
 
 function Home() {
   return (
-    <Page>
-      <Hero>
-        <Logo as={Link} to="/" style={{ margin: '0 auto 28px' }}>
-          <img src={logo} alt="eFood" />
-        </Logo>
-
-        <h1>
-          Viva experiências gastronômicas
-          <br />
-          no conforto da sua casa
-        </h1>
-      </Hero>
-
-      <Main>
-        <RestaurantGrid>
-          {restaurants.map((restaurant) => (
-            <RestaurantCard
-              key={restaurant.id}
-              restaurant={restaurant}
-            />
-          ))}
-        </RestaurantGrid>
-      </Main>
-
+    <>
+      <Hero />
+      <RestaurantList restaurants={restaurants} />
       <Footer />
-    </Page>
+    </>
   )
 }
 

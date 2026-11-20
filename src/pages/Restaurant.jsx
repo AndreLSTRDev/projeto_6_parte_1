@@ -1,118 +1,45 @@
-
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { restaurants } from '../data'
-import Header from '../components/Header'
+import ProfileHeader from '../components/ProfileHeader'
+import Banner from '../components/Banner'
+import DishList from '../components/DishList'
 import Footer from '../components/Footer'
 import ProductModal from '../components/ProductModal'
 import Cart from '../components/Cart'
-import {
-  Page,
-  Main,
-  Banner,
-  MenuGrid,
-  DishCard,
-  Button,
-  FloatingButton,
-} from '../styles/components'
+import { Container } from '../styles'
 
-function Restaurant({
-  cart,
-  setCart,
-  cartStep,
-  setCartStep,
-  address,
-  setAddress,
-  onComplete,
-}) {
+function Restaurant({ cart, setCart, address, setAddress, orderId, onComplete }) {
   const { id } = useParams()
-  const navigate = useNavigate()
-
   const restaurant = restaurants.find((item) => item.id === id)
 
   const [selectedDish, setSelectedDish] = useState(null)
   const [showCart, setShowCart] = useState(false)
-
-  const addDish = (dish) => {
-    setCart((old) => [
-      ...old,
-      { ...dish, restaurantId: restaurant.id },
-    ])
-  }
-
-  const removeDish = (index) => {
-    setCart((old) => old.filter((_, i) => i !== index))
-  }
-
-  const total = cart.reduce((sum, item) => sum + item.price, 0)
-
-  const showSidebar = (step = 'cart') => {
-    setCartStep(step)
-    setShowCart(true)
-  }
+  const [cartStep, setCartStep] = useState('cart')
 
   if (!restaurant) {
     return (
-      <Page>
-        <Main>
-          <h1>Restaurante não encontrado</h1>
-          <Button onClick={() => navigate('/')}>
-            Voltar aos restaurantes
-          </Button>
-        </Main>
-        <Footer />
-      </Page>
+      <Container style={{ padding: '80px 0' }}>
+        <h2>Restaurante não encontrado</h2>
+        <Link to="/">Voltar para a home</Link>
+      </Container>
     )
   }
 
+  const addDish = (dish) => setCart((old) => [...old, dish])
+  const removeDish = (index) => setCart((old) => old.filter((_, i) => i !== index))
+  const total = cart.reduce((sum, item) => sum + item.price, 0)
+
   return (
-    <Page>
-      <Header
-        count={cart.length}
-        onOpenCart={() => showSidebar('cart')}
-      />
-
-      <Banner $image={restaurant.image}>
-        <div>
-          <span>{restaurant.category}</span>
-          <h1>{restaurant.name}</h1>
-        </div>
-      </Banner>
-
-      <Main>
-        <MenuGrid>
-          {restaurant.dishes.concat(restaurant.dishes).map((dish, index) => (
-            <DishCard key={`${dish.id}-${index}`}>
-              <img
-                src={dish.image}
-                alt={dish.name}
-                loading="lazy"
-              />
-
-              <h3>{dish.name}</h3>
-
-              <p>{dish.description.split('. ')[0]}.</p>
-
-              <Button
-                $light
-                $full
-                onClick={() => setSelectedDish(dish)}
-              >
-                Mais detalhes
-              </Button>
-            </DishCard>
-          ))}
-        </MenuGrid>
-      </Main>
-
+    <>
+      <ProfileHeader count={cart.length} onOpenCart={() => setShowCart(true)} />
+      <Banner image={restaurant.image} category={restaurant.category} title={restaurant.name} />
+      {/* O layout do Figma exibe 6 pratos por restaurante */}
+      <DishList dishes={[...restaurant.dishes, ...restaurant.dishes]} onSelect={setSelectedDish} />
       <Footer />
 
       {selectedDish && (
-        <ProductModal
-          dish={selectedDish}
-          onClose={() => setSelectedDish(null)}
-          onAdd={addDish}
-        />
+        <ProductModal dish={selectedDish} onClose={() => setSelectedDish(null)} onAdd={addDish} />
       )}
 
       {showCart && (
@@ -126,13 +53,10 @@ function Restaurant({
           address={address}
           setAddress={setAddress}
           onComplete={onComplete}
+          orderId={orderId}
         />
       )}
-
-      <FloatingButton onClick={() => showSidebar('cart')}>
-        🛒 Carrinho ({cart.length})
-      </FloatingButton>
-    </Page>
+    </>
   )
 }
 

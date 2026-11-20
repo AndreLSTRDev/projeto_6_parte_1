@@ -1,34 +1,23 @@
-
-import { formatPrice } from '../data'
-import {
-  Overlay,
-  ModalBox,
-  CloseButton,
-  Button,
-} from '../styles/components'
+import { formatPrice } from '../../data'
+import Button from '../Button'
+import { Overlay, ModalContent, CloseButton, Title, Text } from './styles'
 
 function ProductModal({ dish, onClose, onAdd }) {
   if (!dish) return null
 
   return (
     <Overlay onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <ModalBox
-        role="dialog"
-        aria-modal="true"
-        aria-label={`Detalhes de ${dish.name}`}
-      >
-        <CloseButton onClick={onClose} aria-label="Fechar">
+      <ModalContent role="dialog" aria-modal="true" aria-label={dish.name}>
+        <CloseButton type="button" onClick={onClose} aria-label="Fechar">
           ×
         </CloseButton>
-
         <img src={dish.image} alt={dish.name} />
-
         <div>
-          <h2>{dish.name}</h2>
-          <p>{dish.description}</p>
-          <p>{dish.serves}</p>
-
+          <Title>{dish.name}</Title>
+          <Text>{dish.description}</Text>
+          <Text>{dish.serves}</Text>
           <Button
+            variant="secondary"
             onClick={() => {
               onAdd(dish)
               onClose()
@@ -37,7 +26,7 @@ function ProductModal({ dish, onClose, onAdd }) {
             Adicionar ao carrinho - {formatPrice(dish.price)}
           </Button>
         </div>
-      </ModalBox>
+      </ModalContent>
     </Overlay>
   )
 }
